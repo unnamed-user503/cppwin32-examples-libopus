@@ -1,0 +1,4 @@
+*.exe binary
+*.dll binary
+*.lib binary
+*.aps binary

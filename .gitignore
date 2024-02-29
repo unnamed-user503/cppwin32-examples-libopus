@@ -1,0 +1,17 @@
+# Binaries
+Binaries/
+Binaries-Intermediates/
+
+# Log files
+*.log
+
+# Visual Studio files and folder
+.vscode/
+.vs/
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
+
+# Directories
+Packages/
