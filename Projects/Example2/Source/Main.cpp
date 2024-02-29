@@ -164,7 +164,7 @@ int main()
         return 0;
     }
 
-    wil::com_ptr<IXAudio2> xaudio2;
+    wil::com_ptr<IXAudio2>  xaudio2;
     IXAudio2MasteringVoice* pMasteringVoice{};
     IXAudio2SourceVoice*    pSourceVoice{};
 

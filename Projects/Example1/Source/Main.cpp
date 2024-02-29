@@ -43,15 +43,15 @@ int main()
         return 0;
     }
 
-    wil::com_ptr<IXAudio2> xaudio2;
+    wil::com_ptr<IXAudio2>  xaudio2;
     IXAudio2MasteringVoice* pMasteringVoice{};
     IXAudio2SourceVoice*    pSourceVoice{};
 
     try
     {
-        auto pOpusInfo = ::op_head(file, -1);
+        auto pOpusHead = ::op_head(file, -1);
 
-        if (!pOpusInfo)
+        if (!pOpusHead)
         {
             throw std::runtime_error("op_head failed.");
         }
@@ -59,7 +59,7 @@ int main()
         N503::Audio::Format::Wave::WaveFormatEx waveFormat{};
         waveFormat.AudioFormat     = 1; // WAVE_FORMAT_PCM
         waveFormat.BitsPerSample   = 16;
-        waveFormat.Channels        = pOpusInfo->channel_count;
+        waveFormat.Channels        = pOpusHead->channel_count;
         waveFormat.SamplePerSecond = 48000; // opusは48000固定
         waveFormat.BlockAlign      = waveFormat.BitsPerSample / 8 * waveFormat.Channels;
         waveFormat.BytesPerSecond  = waveFormat.SamplePerSecond * waveFormat.BlockAlign;
@@ -106,10 +106,19 @@ int main()
 
             auto result = ::op_read(file, buffers.at(buffersIndex).get(), 8192, nullptr);
 
-            if (result <= 0)
+            if (result == 0)
             {
                 std::cout << "End of stream. (length = " << result << ")" << std::endl;
                 break;
+            }
+            else if (result == OP_HOLE)
+            {
+                std::cout << "OP_HOLE" << std::endl;
+                continue;
+            }
+            else if (result < 0)
+            {
+                throw std::runtime_error("op_read failed.");
             }
 
             xaudio2Buffer.Flags      = 0;
